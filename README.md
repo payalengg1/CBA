@@ -4,8 +4,7 @@ Codility Task for CBA : API testing with Postman
 **CBATest.postman_collection.json**
 This is the postman collection 
 
-Sequence of APIs tested:
-1. AddPet
+Sequence of APIs can be verified from the CI pipeline result.
 
 **TestEnv.postman_environment.json**
 This is the Test environment variables
