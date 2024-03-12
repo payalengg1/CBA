@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "ac5ed094-7262-4daa-b15f-bfc1b60ebf82",
-		"name": "CBCTest",
+		"name": "CBATest",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "12086845",
 		"_collection_link": "https://interstellar-zodiac-699274.postman.co/workspace/New-Team-Workspace~5f91e392-4514-4502-bb5b-33717c2fbc2e/collection/12086845-ac5ed094-7262-4daa-b15f-bfc1b60ebf82?action=share&source=collection_link&creator=12086845"
@@ -169,6 +169,12 @@
 							"{\r",
 							"    pm.expect(jsonData).have.property(\"name\");\r",
 							"    pm.expect(jsonData.name).to.eql(\"Tyrannosaurus\");\r",
+							"    pm.expect(jsonData.category.name).to.eql(\"Dinosaur\");\r",
+							"    pm.expect(jsonData.category.id).to.eql(100);\r",
+							"    pm.expect(jsonData.tags[1].name).to.eql(\"dinosaur\");\r",
+							"\r",
+							"\r",
+							"\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -205,6 +211,40 @@
 		},
 		{
 			"name": "UpdateexistingID",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Validate Status Code is 200 and ResponseTime is less than 5 Seconds\",function()\r",
+							"{\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is application/json\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Vaidate the updated value\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"        pm.expect(jsonData).have.property(\"tags\");\r",
+							"        pm.expect(jsonData.tags[2].name).to.eql(\"extinct\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "PUT",
 				"header": [],
@@ -231,6 +271,95 @@
 		},
 		{
 			"name": "GetbyIDPostUpdate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const schema = {\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"id\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"category\": {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"id\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        },\r",
+							"        \"name\": {\r",
+							"          \"type\": \"string\"\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"id\",\r",
+							"        \"name\"\r",
+							"      ]\r",
+							"    },\r",
+							"    \"name\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"photoUrls\": {\r",
+							"      \"type\": \"array\",\r",
+							"      \"items\": [\r",
+							"        {\r",
+							"          \"type\": \"string\"\r",
+							"        }\r",
+							"      ]\r",
+							"    },\r",
+							"    \"tags\": {\r",
+							"      \"type\": \"array\",\r",
+							"      \"items\": [\r",
+							"        {\r",
+							"          \"type\": \"object\",\r",
+							"          \"properties\": {\r",
+							"            \"id\": {\r",
+							"              \"type\": \"integer\"\r",
+							"            },\r",
+							"            \"name\": {\r",
+							"              \"type\": \"string\"\r",
+							"            }\r",
+							"          },\r",
+							"          \"required\": [\r",
+							"            \"id\",\r",
+							"            \"name\"\r",
+							"          ]\r",
+							"        }\r",
+							"      ]\r",
+							"    },\r",
+							"    \"status\": {\r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"id\",\r",
+							"    \"category\",\r",
+							"    \"name\",\r",
+							"    \"photoUrls\",\r",
+							"    \"tags\",\r",
+							"    \"status\"\r",
+							"  ]\r",
+							"}\r",
+							"\r",
+							"const jsonData =pm.response.json();\r",
+							"console.log(jsonData);  //printing  data in console\r",
+							"\r",
+							"pm.test(\"Validate Status Code is 200 and ResponseTime is less than 5 Seconds\",function()\r",
+							"{\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validate Json Schema\",function()\r",
+							"{\r",
+							"    pm.response.to.have.jsonSchema(schema);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -261,25 +390,58 @@
 		},
 		{
 			"name": "UpdatebyFormURLEncoded",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const schema ={\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"code\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"type\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"message\": {\r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"code\",\r",
+							"    \"type\",\r",
+							"    \"message\"\r",
+							"  ]\r",
+							"}\r",
+							"pm.test(\"Validate Json Schema\",function()\r",
+							"{\r",
+							"    pm.response.to.have.jsonSchema(schema);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Headers validations\",function()\r",
+							"{\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json\");\r",
+							"});\r",
+							"  pm.test(\"Validate Status, responseTime and text message\",function()\r",
+							" {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+							"    pm.expect(pm.response.text()).to.include(\"message\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"protocolProfileBehavior": {
 				"disabledSystemHeaders": {}
 			},
 			"request": {
 				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/x-www-form-urlencoded",
-						"type": "text",
-						"disabled": true
-					},
-					{
-						"key": "Accept",
-						"value": "application/ecmascript",
-						"type": "text",
-						"disabled": true
-					}
-				],
+				"header": [],
 				"body": {
 					"mode": "urlencoded",
 					"urlencoded": [
@@ -305,72 +467,94 @@
 		},
 		{
 			"name": "GetbyIDPostStatusUpdate",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const schema = {\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"id\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"category\": {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"id\": {\r",
+							"          \"type\": \"integer\"\r",
+							"        },\r",
+							"        \"name\": {\r",
+							"          \"type\": \"string\"\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"id\",\r",
+							"        \"name\"\r",
+							"      ]\r",
+							"    },\r",
+							"    \"name\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"photoUrls\": {\r",
+							"      \"type\": \"array\",\r",
+							"      \"items\": [\r",
+							"        {\r",
+							"          \"type\": \"string\"\r",
+							"        }\r",
+							"      ]\r",
+							"    },\r",
+							"    \"tags\": {\r",
+							"      \"type\": \"array\",\r",
+							"      \"items\": [\r",
+							"        {\r",
+							"          \"type\": \"object\",\r",
+							"          \"properties\": {\r",
+							"            \"id\": {\r",
+							"              \"type\": \"integer\"\r",
+							"            },\r",
+							"            \"name\": {\r",
+							"              \"type\": \"string\"\r",
+							"            }\r",
+							"          },\r",
+							"          \"required\": [\r",
+							"            \"id\",\r",
+							"            \"name\"\r",
+							"          ]\r",
+							"        }\r",
+							"      ]\r",
+							"    },\r",
+							"    \"status\": {\r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"id\",\r",
+							"    \"category\",\r",
+							"    \"name\",\r",
+							"    \"photoUrls\",\r",
+							"    \"tags\",\r",
+							"    \"status\"\r",
+							"  ]\r",
+							"}\r",
+							"\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validate Status Code is 200 and ResponseTime is less than 5 Seconds\",function()\r",
+							"{\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validate Json Schema\",function()\r",
+							"{\r",
+							"    pm.response.to.have.jsonSchema(schema);\r",
+							"});"
+						],
+						"type": "text/javascript"
 					}
-				},
-				"url": {
-					"raw": "{{CBA_base_url}}/pet/{{pet_id}}",
-					"host": [
-						"{{CBA_base_url}}"
-					],
-					"path": [
-						"pet",
-						"{{pet_id}}"
-					]
 				}
-			},
-			"response": []
-		},
-		{
-			"name": "UploadImage",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "file",
-							"type": "file",
-							"src": "/C:/Users/Prisha/Pictures/3d-businessman-presenting-concept-word-qa-isolated-white-background-GTFYRB.jpg"
-						}
-					]
-				},
-				"url": {
-					"raw": "{{CBA_base_url}}/pet/{{pet_id}}/uploadImage",
-					"host": [
-						"{{CBA_base_url}}"
-					],
-					"path": [
-						"pet",
-						"{{pet_id}}",
-						"uploadImage"
-					],
-					"query": [
-						{
-							"key": "",
-							"value": null,
-							"disabled": true
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "GetbyIDPostUpload",
+			],
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -401,9 +585,71 @@
 		},
 		{
 			"name": "DeleteId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const schema ={\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"code\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"type\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"message\": {\r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"code\",\r",
+							"    \"type\",\r",
+							"    \"message\"\r",
+							"  ]\r",
+							"}\r",
+							"pm.test(\"Validate Json Schema\",function()\r",
+							"{\r",
+							"    pm.response.to.have.jsonSchema(schema);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Headers validations\",function()\r",
+							"{\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json\");\r",
+							"});\r",
+							"\r",
+							"  pm.test(\"Validate Status, responseTime and text message\",function()\r",
+							" {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+							"    pm.expect(pm.response.text()).to.include(\"message\");\r",
+							"});\r",
+							"\r",
+							"  pm.test(\"Validate id in message\",function()\r",
+							" {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.eql(pm.collectionVariables.get(\"pet_id\"));\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "DELETE",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
 					"raw": "{{CBA_base_url}}/pet/{{pet_id}}",
 					"host": [
@@ -419,6 +665,55 @@
 		},
 		{
 			"name": "GetbyIDPostDelete",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const schema = {\r",
+							"    \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"code\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"type\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"message\": {\r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"code\",\r",
+							"    \"type\",\r",
+							"    \"message\"\r",
+							"  ]\r",
+							"}\r",
+							"\r",
+							"const jsonData =pm.response.json();\r",
+							"console.log(jsonData);\r",
+							"\r",
+							"pm.test(\"Validate Status Code is 404 and ResponseTime is less than 5 Seconds\",function()\r",
+							"{\r",
+							"    pm.response.to.have.status(404);\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(5000);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validate Json Schema\",function()\r",
+							"{\r",
+							"    pm.response.to.have.jsonSchema(schema);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validate response\",function()\r",
+							"{\r",
+							"    pm.expect(jsonData).have.property(\"message\");\r",
+							"    pm.expect(jsonData.message).to.eql(\"Pet not found\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
